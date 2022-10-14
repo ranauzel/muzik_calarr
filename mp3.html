@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
+    />
+   
+    <link rel="stylesheet" href="mp3css.css" />
+    <title>Müzik Çalar</title>
+
+  </head>
+  <body>
+    <button class=" button" 
+            onclick="kapat()">
+ KAPAT 
+        </button>    
+    <div class="container-audio">
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+      <div class="colum1">
+          <div class="row"></div>
+      </div>
+
+      
+     
+    </div>
+    
+     <div class="wrapper">
+      <h1><span>Müzik Çalar</span></h1>
+    <div class="music-container" id="music-container">
+      <div class="music-info">
+        <h4 id="title"></h4>
+        <div class="progress-container" id="progress-container">
+          <div class="progress" id="progress"></div>
+        </div>
+      </div>
+
+      <audio src="muzikler/tarkan-arada-bir.mp3" id="audio"></audio>
+      
+      <div class="navigation">
+        <button id="prev" class="action-btn">
+          <i class="fas fa-backward"></i>
+        </button>
+        <button id="play" class="action-btn action-btn-big">
+          <i class="fas fa-play"></i>
+        </button>
+        <button id="next" class="action-btn">
+          <i class="fas fa-forward"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  </body>
+  <script >
+    const muzikk = document.getElementById('music-container');
+    const baslaBtn = document.getElementById('play');
+    const oncekiBtn = document.getElementById('prev');
+    const sonrakiBtn = document.getElementById('next');
+  
+    const audio = document.getElementById('audio');
+    const progress = document.getElementById('progress');
+    const progressContainer = document.getElementById('progress-container');
+    const baslik = document.getElementById('title');
+    const cover = document.getElementById('cover');
+    const zamanakim = document.querySelector('#currTime');
+    const zaman = document.querySelector('#durTime');
+  
+    // şarkı listesi
+    const muziklistesi = ['Tarkan Arada Bir', 'Tarkan Dudu','Emircan Felfena','Melek Mosso Sabahcı Kahvesi'];
+  
+    let muzikindeks = 3;
+  
+  muzikyukle(muziklistesi[muzikindeks]);
+  
+  // müzikler klasöründen şarkıları çağıran fonksiyon
+  function muzikyukle(mzk) {
+    baslik.innerText = mzk;
+    audio.src = `muzikler/${mzk}.mp3`;
+  }
+  
+  // şarkıyı başlatan fonksiyon
+  function baslat() {
+    muzikk.classList.add('play');
+    baslaBtn.querySelector('i.fas').classList.remove('fa-play');
+    baslaBtn.querySelector('i.fas').classList.add('fa-pause');
+  
+    audio.play();
+  }
+  
+  // şarkıyı durduran fonksiyon
+  function durdur() {
+    muzikk.classList.remove('play');
+    baslaBtn.querySelector('i.fas').classList.add('fa-play');
+    baslaBtn.querySelector('i.fas').classList.remove('fa-pause');
+  
+    audio.pause();
+  }
+  
+  // önceki şarkıya dönen fonksiyon
+  function onceki() {
+    muzikindeks--;
+  
+    if (muzikindeks < 0) {
+      muzikindeks = muziklistesi.length - 1;
+    }
+  
+    muzikyukle(muziklistesi[muzikindeks]);
+  
+    baslat();
+  }
+  
+  // sonraki şarkıya geçen fonksiyon
+  function sonraki() {
+    muzikindeks++;
+  
+    if (muzikindeks > muziklistesi.length - 1) {
+      muzikindeks = 0;
+    }
+  
+    muzikyukle(muziklistesi[muzikindeks]);
+  
+    baslat();
+  }
+  
+  /*function updateProgress(e) {
+    const { duration, currentTime } = e.srcElement;
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+  }
+  
+  function setProgress(e) {
+    const width = this.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+  
+    audio.currentTime = (clickX / width) * duration;
+  }*/
+  
+  //sarkinin zamanini çizgisini gosteren fonksiyon
+  function sarkizamani (e) {
+    const {duration,currentTime} = e.srcElement;
+    var sec;
+    var sec_d;
+  
+    let min = (currentTime==null)? 0:
+     Math.floor(currentTime/60);
+     min = min <10 ? '0'+min:min;
+  
+    function get_sec (x) {
+      if(Math.floor(x) >= 60){
+        
+        for (var i = 1; i<=60; i++){
+          if(Math.floor(x)>=(60*i) && Math.floor(x)<(60*(i+1))) {
+            sec = Math.floor(x) - (60*i);
+            sec = sec <10 ? '0'+sec:sec;
+          }
+        }
+      }else{
+         sec = Math.floor(x);
+         sec = sec <10 ? '0'+sec:sec;
+       }
+    } 
+  
+    get_sec (currentTime,sec);
+  
+    zamanakim.innerHTML = min +':'+ sec;
+  
+    let min_d = (isNaN(duration) === true)? '0':
+      Math.floor(duration/60);
+     min_d = min_d <10 ? '0'+min_d:min_d;
+  
+  
+     function get_sec_d (x) {
+      if(Math.floor(x) >= 60){
+        
+        for (var i = 1; i<=60; i++){
+          if(Math.floor(x)>=(60*i) && Math.floor(x)<(60*(i+1))) {
+            sec_d = Math.floor(x) - (60*i);
+            sec_d = sec_d <10 ? '0'+sec_d:sec_d;
+          }
+        }
+      }else{
+         sec_d = (isNaN(duration) === true)? '0':
+         Math.floor(x);
+         sec_d = sec_d <10 ? '0'+sec_d:sec_d;
+       }
+    } 
+  
+    
+    get_sec_d (duration);
+  
+    zaman.innerHTML = min_d +':'+ sec_d;
+      
+  };
+  
+  
+  // butonlara basıldığında çağrılacak fonksiyonlar
+  baslaBtn.addEventListener('click', () => {
+    const oynatilan = muzikk.classList.contains('play');
+  
+    if (oynatilan) {
+      durdur();
+    } else {
+      baslat();
+    }
+  });
+    function kapat(){
+      window.close();
+   }
+  oncekiBtn.addEventListener('click', onceki);
+  sonrakiBtn.addEventListener('click', sonraki);
+  
+  audio.addEventListener('timeupdate', updateProgress);
+  
+  progressContainer.addEventListener('click', setProgress);
+  
+  audio.addEventListener('ended', sonraki);
+  
+  audio.addEventListener('timeupdate',sarkizamani);
+	  
+  </script>
+</html>
